@@ -565,7 +565,6 @@
       display: flex; align-items: baseline; gap: 1.2rem;
       font-family: var(--font-mon); font-size: .78rem;
       letter-spacing: .1em; color: rgba(194,201,176,.38);
-      white-space: nowrap;
     }
     .contact-info-row strong {
       font-weight: 600; color: rgba(194,201,176,.22);
@@ -617,7 +616,8 @@
     @media (max-width: 768px) {
       html { font-size: 16px; }
       nav { padding: 1.2rem 1.5rem; }
-      .contact-info-row { font-size: .72rem; letter-spacing: .04em; gap: .7rem; }
+      .contact-info-row { flex-direction: column; gap: .15rem; font-size: .72rem; letter-spacing: .04em; }
+      .contact-info-row strong { width: auto; }
       nav.scrolled { padding: .9rem 1.5rem; }
       .nav-pill { display: none; }
       .nav-cta { margin-left: 0; }
