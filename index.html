@@ -565,6 +565,7 @@
       display: flex; align-items: baseline; gap: 1.2rem;
       font-family: var(--font-mon); font-size: .78rem;
       letter-spacing: .1em; color: rgba(194,201,176,.38);
+      white-space: nowrap;
     }
     .contact-info-row strong {
       font-weight: 600; color: rgba(194,201,176,.22);
@@ -641,6 +642,12 @@
       .hero-name { font-size: 3rem; white-space: normal; }
       .contact-email-link { font-size: 1.4rem; }
       .about-tags { gap: .4rem; }
+    }
+    /* ─── TOUCH / MOBILE: hide desktop cursor ─────────── */
+    @media (hover: none), (pointer: coarse) {
+      .cursor, .cursor-ring { display: none !important; }
+      body { cursor: auto !important; }
+      .nav-cta, button, a { cursor: pointer !important; }
     }
   </style>
 </head>
