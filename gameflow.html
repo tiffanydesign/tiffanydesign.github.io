@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameFlow: UX Case Study | Xiangyu Shi</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #c2c9b0;
+      --bg-card:   #d4dbc5;
+      --bg-light:  #f0eee6;
+      --ink:       #1a1a18;
+      --ink-muted: #4a5a3e;
+      --accent:    #3d5c3a;
+      --accent-lt: #8a9870;
+      --line:      rgba(58,74,46,0.18);
+      --white:     #f0eee6;
+      --stripe:    rgba(58,74,46,0.09);
+      --red:       #8a3d3d;
+      --red-bg:    rgba(138,61,61,0.08);
+      --teal:      #3d5c3a;
+      --teal-bg:   rgba(61,92,58,0.08);
+      --blue:      #3d4f5c;
+      --blue-bg:   rgba(61,79,92,0.08);
+      --font-ser:  'Cormorant Garamond', Georgia, serif;
+      --font-san:  'DM Sans', system-ui, sans-serif;
+      --font-mon:  'DM Mono', monospace;
+      --ease:      cubic-bezier(.25,.46,.45,.94);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 19px; }
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-san);
+      font-weight: 500;
+      line-height: 1.65;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CURSOR ─── */
+    .cursor {
+      position: fixed; z-index: 9999;
+      width: 8px; height: 8px;
+      background: var(--ink); border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%,-50%);
+      transition: transform .12s var(--ease), background .2s;
+    }
+    .cursor-ring {
+      position: fixed; z-index: 9998;
+      width: 36px; height: 36px;
+      border: 1px solid var(--accent); border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%,-50%);
+      transition: transform .35s var(--ease), width .3s, height .3s;
+    }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.4rem 3rem;
+      background: rgba(240,238,230,.95);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(58,74,46,.1);
+      transition: padding .4s;
+    }
+    nav.scrolled { padding: 1rem 3rem; }
+    .nav-logo {
+      font-family: var(--font-ser);
+      font-size: 1rem; font-weight: 600; letter-spacing: .04em;
+      color: var(--accent);
+    }
+    .nav-back {
+      font-family: var(--font-mon); font-size: .72rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--accent); display: flex; align-items: center; gap: .5rem;
+      transition: color .2s;
+    }
+    .nav-back:hover { color: var(--ink); }
+
+    /* ─── CONTAINER ─── */
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 2rem; }
+
+    /* ─── SECTION COMMON ─── */
+    .section-label {
+      font-family: var(--font-mon); font-size: .72rem;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: .9rem;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .section-label::before {
+      content: ''; display: block; width: 20px; height: 1px;
+      background: var(--accent);
+    }
+    .section-title {
+      font-family: var(--font-ser);
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 500;
+      line-height: 1.1; letter-spacing: -.01em; margin-bottom: 1.6rem;
+    }
+    .section-title em { font-style: italic; color: var(--accent); }
+
+    /* ─── HERO ─── */
+    .case-hero {
+      padding: 9rem 3rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4rem;
+      align-items: start;
+      border-bottom: 1px solid var(--line);
+      position: relative; overflow: hidden;
+    }
+    .case-hero::before {
+      content: ''; position: absolute;
+      top: -80px; left: -120px;
+      width: 380px; height: 380px; border-radius: 50%;
+      background: radial-gradient(circle at 40% 45%, rgba(61,92,58,.1), transparent 60%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: .5rem;
+      margin-bottom: 1.2rem; flex-wrap: wrap;
+    }
+    .hero-eyebrow-tag {
+      font-family: var(--font-mon); font-size: .68rem;
+      letter-spacing: .16em; text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(61,92,58,.1);
+      border: 1px solid rgba(61,92,58,.2);
+      border-radius: 100px;
+      padding: .32rem .9rem;
+      display: inline-block;
+    }
+    .case-hero h1 {
+      font-family: var(--font-ser);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      font-weight: 400; line-height: .95;
+      letter-spacing: -.02em; margin-bottom: 1.2rem;
+    }
+    .hero-tagline {
+      font-family: var(--font-san); font-size: 1rem;
+      font-weight: 500; letter-spacing: 0; color: var(--ink-muted);
+      line-height: 1.75; margin-bottom: 1.4rem;
+    }
+    .hero-sub {
+      font-size: 1rem; font-weight: 500; color: var(--ink-muted);
+      max-width: 56ch; line-height: 1.75;
+    }
+    .hero-bullets {
+      margin: .5rem 0 0 0; max-width: 56ch;
+      display: flex; flex-direction: column; gap: .2rem;
+    }
+    .hero-bullets li {
+      font-size: .95rem; color: var(--ink-muted); line-height: 1.7;
+      padding-left: 1.1rem; position: relative;
+    }
+    .hero-bullets li::before {
+      content: ''; position: absolute; left: 0; top: .55rem;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--accent);
+    }
+    .hero-info-bar {
+      display: flex; flex-direction: column; gap: 2rem;
+      padding-top: 4.5rem; min-width: 180px;
+    }
+    .hero-info-label {
+      font-family: var(--font-mon); font-size: .62rem;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: .4rem;
+    }
+    .hero-info-value {
+      font-size: .9rem; font-weight: 500; color: var(--ink);
+    }
+
+    /* ─── META ─── */
+    .meta-bar {
+      display: grid; grid-template-columns: repeat(5, 1fr);
+      padding: 1.5rem 0; border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .meta-item:not(:last-child) {
+      border-right: 1px solid var(--line);
+      padding-right: 1.2rem; margin-right: 1.2rem;
+    }
+    .meta-label {
+      font-family: var(--font-mon); font-size: .55rem;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--ink-muted); margin-bottom: .25rem;
+    }
+    .meta-value { font-size: .82rem; font-weight: 500; }
+
+    /* ─── SEC ─── */
+    .sec { padding: 2.5rem 0; border-top: 1px solid var(--line); }
+
+    /* ─── CARDS ─── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.8rem; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1.8rem; }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--line); border-radius: 0; padding: 1.5rem;
+    }
+    .card h4 { font-family: var(--font-ser); font-size: 1.1rem; font-weight: 700; margin-bottom: .4rem; }
+    .card p { font-size: .95rem; color: var(--ink-muted); line-height: 1.75; }
+
+    /* Context role cards — numbered */
+    .ctx-num {
+      font-family: var(--font-ser); font-size: 1.8rem;
+      font-weight: 400; line-height: 1; letter-spacing: -.03em;
+      margin-bottom: .3rem; opacity: .65;
+    }
+    .card.ctx-warm { background: rgba(138,61,61,.05); border-color: rgba(138,61,61,.12); }
+    .card.ctx-warm .ctx-num { color: var(--red); }
+    .card.ctx-green { background: rgba(61,92,58,.05); border-color: rgba(61,92,58,.14); }
+    .card.ctx-green .ctx-num { color: var(--accent); }
+    .card.ctx-blue { background: rgba(61,79,92,.05); border-color: rgba(61,79,92,.12); }
+    .card.ctx-blue .ctx-num { color: var(--blue); }
+
+    /* Pain point cards — horizontal rows */
+    .pain-rows { display: flex; flex-direction: column; gap: 0; margin-top: 1.8rem; }
+    .pain-row {
+      display: grid; grid-template-columns: 280px 1fr;
+      background: var(--bg-light);
+      border: 1px solid var(--line);
+      border-bottom: none;
+      transition: box-shadow .28s var(--ease), border-color .25s;
+    }
+    .pain-row:last-child { border-bottom: 1px solid var(--line); }
+    .pain-row.pr-red   { border-left: 3px solid var(--red); }
+    .pain-row.pr-green { border-left: 3px solid var(--accent); }
+    .pain-row.pr-blue  { border-left: 3px solid var(--blue); }
+    .pain-row:hover { box-shadow: 0 4px 20px rgba(58,74,46,.08); z-index: 1; position: relative; }
+    .pain-row-left {
+      padding: 1.6rem 1.8rem;
+      border-right: 1px solid var(--line);
+      display: flex; flex-direction: column; gap: .6rem;
+      justify-content: center;
+      background: rgba(240,238,230,.55);
+    }
+    .pain-row-right {
+      padding: 1.6rem 2rem;
+      display: flex; align-items: center;
+    }
+    .pain-row-right p { font-size: .88rem; color: var(--ink-muted); line-height: 1.85; margin: 0; }
+    .pain-badge {
+      display: inline-flex; align-items: center;
+      font-family: var(--font-mon); font-size: .52rem;
+      letter-spacing: .18em; text-transform: uppercase;
+      padding: .2rem .65rem; border-radius: 100px; width: fit-content;
+    }
+    .pain-badge.pb-red   { background: rgba(138,61,61,.08); color: var(--red);    border: 1px solid rgba(138,61,61,.16); }
+    .pain-badge.pb-green { background: rgba(61,92,58,.08);  color: var(--accent); border: 1px solid rgba(61,92,58,.16); }
+    .pain-badge.pb-blue  { background: rgba(61,79,92,.07);  color: var(--blue);   border: 1px solid rgba(61,79,92,.14); }
+    .pain-row h4 {
+      font-family: var(--font-ser); font-size: 1.05rem;
+      font-weight: 700; line-height: 1.3; margin: 0;
+    }
+
+    /* Reflection card variants — unified base, distinct accent */
+    .card.rc-stripe,
+    .card.rc-ghost,
+    .card.rc-dark {
+      background: var(--bg-light);
+      border: 1px solid var(--line);
+      border-top-width: 3px;
+      padding-top: calc(1.5rem - 2px);
+    }
+    .card.rc-stripe { border-top-color: var(--accent); }
+    .card.rc-ghost  { border-top-color: var(--blue); }
+    .card.rc-dark   { border-top-color: var(--red); }
+    .card.rc-dark h4 { color: var(--red) !important; }
+    .card.rc-dark p  { color: var(--ink-muted); }
+
+    /* ─── CALLOUT ─── */
+    .callout {
+      padding: 1.5rem 1.8rem; margin-top: 1.8rem;
+      border: 1px solid var(--line); background: rgba(240,238,230,.5);
+    }
+    .callout.accent-box { background: rgba(61,92,58,.06); border-color: rgba(61,92,58,.15); }
+    .callout.warm-box { background: rgba(138,61,61,.04); border-color: rgba(138,61,61,.1); }
+    .callout.blue-box { background: rgba(61,79,92,.05); border-color: rgba(61,79,92,.12); }
+    .callout h4 {
+      font-family: var(--font-ser); font-size: 1.05rem;
+      font-weight: 700; margin-bottom: .5rem; color: var(--accent);
+    }
+    .callout.warm-box h4 { color: var(--red); }
+    .callout.blue-box h4 { color: var(--blue); }
+    .callout p { font-size: .95rem; color: var(--ink-muted); line-height: 1.8; }
+    .callout ul { margin-top: .5rem; }
+    .callout li {
+      font-size: .95rem; color: var(--ink-muted); line-height: 1.75;
+      padding: .2rem 0 .2rem 1rem; position: relative;
+    }
+    .callout li::before {
+      content: ''; position: absolute; left: 0; top: .6rem;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--accent-lt);
+    }
+
+    /* ─── PERSONA ─── */
+    .persona-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 1.8rem; }
+    .persona {
+      background: var(--bg-card);
+      border: 1px solid var(--line); padding: 1.5rem;
+    }
+    .persona-header { display: flex; align-items: center; gap: .8rem; margin-bottom: 1rem; }
+    .persona-avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: .78rem; color: var(--white); flex-shrink: 0;
+      background: var(--accent);
+    }
+    .persona-name { font-family: var(--font-ser); font-size: 1.05rem; font-weight: 700; }
+    .persona-role { font-size: .75rem; color: var(--ink-muted); }
+    .persona-quote {
+      font-family: var(--font-ser); font-size: .95rem;
+      color: var(--ink-muted); line-height: 1.7;
+      border-left: 2px solid var(--accent); padding-left: .8rem;
+      margin-bottom: 1rem; font-style: italic;
+    }
+    .persona-label {
+      font-family: var(--font-mon); font-size: .55rem;
+      letter-spacing: .12em; text-transform: uppercase;
+      margin-bottom: .25rem; font-weight: 500;
+    }
+    .persona-label.pain { color: var(--red); }
+    .persona-label.goal { color: var(--accent); margin-top: .6rem; }
+    .persona-text { font-size: .95rem; color: var(--ink-muted); line-height: 1.65; }
+    .persona-freq {
+      font-family: var(--font-mon); font-size: .58rem;
+      color: var(--ink-muted); margin-top: .6rem;
+    }
+
+    /* ─── PROCESS FLOW CARDS ─── */
+    .process-flow {
+      display: flex; flex-direction: column;
+      gap: 0; margin-top: 2rem;
+    }
+    .process-card {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-bottom: none;
+      position: relative;
+      transition: background .25s, border-color .25s, box-shadow .25s;
+    }
+    .process-card:last-child { border-bottom: 1px solid var(--line); }
+    .process-card:hover {
+      background: rgba(240,238,230,.7);
+      border-color: rgba(61,92,58,.45);
+      box-shadow: inset 0 0 0 1px rgba(61,92,58,.18), 0 2px 16px rgba(61,92,58,.1);
+      z-index: 1;
+    }
+    .process-card:hover .process-card-left {
+      border-right-color: rgba(61,92,58,.35);
+    }
+    .process-card:hover .process-card-num {
+      color: var(--accent);
+      text-shadow: 0 0 20px rgba(61,92,58,.25);
+    }
+    .process-card-left {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: .4rem; padding: 1.4rem 1rem;
+      border-right: 1px solid var(--line);
+      align-self: stretch;
+      transition: border-right-color .25s;
+    }
+    .process-card-num {
+      font-family: var(--font-ser); font-size: 1.8rem;
+      font-weight: 400; line-height: 1;
+      color: var(--accent); letter-spacing: -.02em;
+      transition: text-shadow .25s;
+    }
+    .process-card-phase {
+      font-family: var(--font-mon); font-size: .52rem;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(61,92,58,.1);
+      border: 1px solid rgba(61,92,58,.18);
+      border-radius: 100px;
+      padding: .2rem .65rem;
+      white-space: nowrap; text-align: center;
+    }
+    .process-card-right {
+      padding: 1.2rem 1.6rem;
+      display: flex; flex-direction: column; gap: .3rem;
+    }
+    .process-card h4 {
+      font-family: var(--font-ser); font-size: 1.05rem;
+      font-weight: 600; color: var(--ink); line-height: 1.3;
+    }
+    .process-card p {
+      font-size: .82rem; color: var(--ink-muted); line-height: 1.75;
+    }
+    .process-arrow {
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent-lt); font-size: .9rem;
+      height: 1.6rem; line-height: 1;
+      width: 100px; align-self: center;
+    }
+
+    /* ─── MODULE ─── */
+    .module { padding: 2.5rem 0; border-top: 1px solid var(--line); }
+    .mod-num {
+      font-family: var(--font-mon); font-size: .62rem;
+      color: var(--ink-muted); margin-bottom: .35rem;
+    }
+    .module h3 {
+      font-family: var(--font-ser); font-size: 1.7rem;
+      font-weight: 700; margin-bottom: .3rem;
+    }
+    .mod-tagline {
+      font-size: .95rem; color: var(--accent);
+      font-weight: 500; margin-bottom: 1.5rem;
+    }
+    .ps-grid { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.8rem; }
+    .ps-block {
+      padding: 1.2rem 1.5rem;
+      border: 1px solid var(--line);
+    }
+    .ps-block.prob-block { border-left: 3px solid var(--red); background: rgba(138,61,61,.03); }
+    .ps-block.sol-block  { border-left: 3px solid var(--accent); background: rgba(61,92,58,.04); }
+    .ps-label {
+      font-family: var(--font-mon); font-size: .68rem;
+      letter-spacing: .16em; text-transform: uppercase;
+      margin-bottom: .55rem; display: flex; align-items: center; gap: .5rem;
+    }
+    .ps-label.prob { color: var(--red); }
+    .ps-label.sol { color: var(--accent); }
+    .dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; }
+    .dot.prob { background: var(--red); }
+    .dot.sol { background: var(--accent); }
+    .ps-block p { font-size: .95rem; color: var(--ink-muted); line-height: 1.8; }
+
+    /* ─── DETAIL BOX ─── */
+    .detail-box {
+      background: var(--bg-card);
+      border: 1px solid var(--line); padding: 1.5rem 1.8rem; margin-bottom: 1.8rem;
+    }
+    .detail-box h5 {
+      font-family: var(--font-ser); font-size: 1.15rem;
+      font-weight: 700; margin-bottom: .5rem;
+    }
+    .detail-box li {
+      font-size: .95rem; color: var(--ink-muted); line-height: 1.7;
+      padding: .2rem 0 .2rem 1rem; position: relative;
+    }
+    .detail-box li::before {
+      content: ''; position: absolute; left: 0; top: .6rem;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--accent-lt);
+    }
+
+    /* ─── IMAGE PLACEHOLDER ─── */
+    .img-ph {
+      background: linear-gradient(135deg, rgba(212,219,197,.6), rgba(240,238,230,.4));
+      border: 1px solid var(--line); height: 260px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--ink-muted); font-size: .72rem;
+      font-family: var(--font-mon); position: relative; overflow: hidden;
+      margin-bottom: .5rem;
+    }
+    .img-ph::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(58,74,46,.03) 20px, rgba(58,74,46,.03) 21px);
+    }
+    .img-caption {
+      font-size: .68rem; color: var(--ink-muted);
+      text-align: center; margin-bottom: 1.8rem;
+      font-family: var(--font-mon);
+    }
+
+    /* ─── ITERATION ─── */
+    .iter-card {
+      background: var(--bg-card);
+      border: 1px solid var(--line); padding: 1.5rem 1.8rem; margin-bottom: 1rem;
+    }
+    .iter-header { display: flex; align-items: center; gap: .6rem; margin-bottom: .6rem; }
+    .iter-badge {
+      font-family: var(--font-mon); font-size: .55rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .2rem .6rem; font-weight: 500;
+    }
+    .iter-badge.trigger { background: rgba(240,238,230,.6); color: var(--ink-muted); }
+    .iter-card h4 {
+      font-family: var(--font-ser); font-size: .95rem;
+      font-weight: 700; margin-bottom: .5rem;
+    }
+    .iter-card > p { font-size: .82rem; color: var(--ink-muted); line-height: 1.8; }
+    .iter-row { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; margin-top: .6rem; }
+    .iter-cell {
+      font-size: .76rem; color: var(--ink-muted); line-height: 1.65;
+      padding: .8rem 1rem;
+    }
+    .iter-cell.was { background: rgba(138,61,61,.05); }
+    .iter-cell.now { background: rgba(61,92,58,.06); }
+    .iter-cell strong {
+      font-size: .6rem; display: block; margin-bottom: .2rem;
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    .iter-cell.was strong { color: var(--red); }
+    .iter-cell.now strong { color: var(--accent); }
+
+    /* ─── OUTCOME ─── */
+    .outcome-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.8rem; }
+    .outcome-card { padding: 1.5rem; text-align: center; }
+    .outcome-card .num {
+      font-family: var(--font-ser); font-size: 1.8rem;
+      font-weight: 500; margin-bottom: .3rem;
+    }
+    .outcome-card .desc { font-size: .76rem; line-height: 1.65; }
+    .oc-warm { background: rgba(138,61,61,.06); border: 1px solid rgba(138,61,61,.1); }
+    .oc-warm .num { color: var(--red); } .oc-warm .desc { color: var(--red); }
+    .oc-green { background: rgba(61,92,58,.06); border: 1px solid rgba(61,92,58,.12); }
+    .oc-green .num { color: var(--accent); } .oc-green .desc { color: var(--accent); }
+    .oc-blue { background: rgba(61,79,92,.06); border: 1px solid rgba(61,79,92,.1); }
+    .oc-blue .num { color: var(--blue); } .oc-blue .desc { color: var(--blue); }
+
+    /* ─── REFLECTION ─── */
+    .reflection blockquote {
+      font-family: var(--font-ser); font-size: 1.05rem;
+      line-height: 1.85; color: var(--ink-muted);
+      border-left: 2px solid var(--accent); padding-left: 1.4rem;
+      margin-top: 1.2rem;
+      margin-left: 0;
+      max-width: 100%;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--ink); color: rgba(194,201,176,.25);
+      padding: 2rem 3rem;
+      border-top: 1px solid rgba(194,201,176,.06);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: .72rem; font-family: var(--font-mon); letter-spacing: .1em;
+    }
+    .footer-links { display: flex; gap: 2rem; }
+    .footer-links a { color: rgba(194,201,176,.25); transition: color .25s; }
+    .footer-links a:hover { color: var(--accent-lt); }
+
+    /* ─── ANIMATIONS ─── */
+
+    /* Page load fade-in */
+    body { animation: pageFade .45s var(--ease) both; }
+    @keyframes pageFade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Hero entrance — CSS-driven stagger */
+    @keyframes heroUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes heroFade {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes heroRight {
+      from { opacity: 0; transform: translateX(18px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .hero-eyebrow  { opacity:0; animation: heroUp    .5s var(--ease) .10s both; }
+    .case-hero h1  { opacity:0; animation: heroUp    .8s var(--ease) .26s both; }
+    .hero-tagline  { opacity:0; animation: heroUp    .6s var(--ease) .46s both; }
+    .hero-sub      { opacity:0; animation: heroFade  .65s var(--ease) .65s both; }
+    .hero-bullets  { opacity:0; animation: heroFade  .65s var(--ease) .75s both; }
+    .hero-info-bar { opacity:0; animation: heroRight .65s var(--ease) .90s both; }
+
+    /* Scroll reveal — base */
+    .reveal {
+      opacity: 0; transform: translateY(24px) scale(.99);
+      transition: opacity .65s var(--ease), transform .65s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* Reveal variants */
+    .reveal-img {
+      opacity: 0; transform: translateY(16px) scale(.98);
+      transition: opacity .75s var(--ease), transform .75s var(--ease);
+    }
+    .reveal-img.visible { opacity: 1; transform: none; }
+
+    .reveal-left {
+      opacity: 0; transform: translateX(-20px);
+      transition: opacity .7s var(--ease), transform .7s var(--ease);
+    }
+    .reveal-left.visible { opacity: 1; transform: none; }
+
+    /* Stagger delay helpers */
+    .stagger-delay-1 { transition-delay: .07s !important; }
+    .stagger-delay-2 { transition-delay: .14s !important; }
+    .stagger-delay-3 { transition-delay: .21s !important; }
+    .stagger-delay-4 { transition-delay: .28s !important; }
+    .stagger-delay-5 { transition-delay: .35s !important; }
+    .stagger-delay-6 { transition-delay: .42s !important; }
+
+    /* Card hover lift + border highlight */
+    .card, .persona {
+      transition: transform .28s var(--ease), box-shadow .28s var(--ease), border-color .25s;
+    }
+    .card:hover, .persona:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(58,74,46,.12);
+      border-color: rgba(61,92,58,.4);
+    }
+
+    /* Callout & detail-box subtle hover */
+    .callout, .detail-box {
+      transition: transform .28s var(--ease), box-shadow .28s var(--ease), border-color .25s;
+    }
+    .callout:hover, .detail-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(58,74,46,.08);
+      border-color: rgba(61,92,58,.35);
+    }
+    .callout.warm-box:hover { border-color: rgba(138,61,61,.35); }
+    .callout.blue-box:hover { border-color: rgba(61,79,92,.35); }
+
+    /* ps-block hover border */
+    .ps-block {
+      transition: border-color .25s, box-shadow .25s;
+    }
+    .ps-block.prob-block:hover {
+      border-color: rgba(138,61,61,.45);
+      box-shadow: 0 4px 18px rgba(138,61,61,.07);
+    }
+    .ps-block.sol-block:hover {
+      border-color: rgba(61,92,58,.45);
+      box-shadow: 0 4px 18px rgba(61,92,58,.08);
+    }
+
+    /* iter-card hover border */
+    .iter-card {
+      transition: transform .28s var(--ease), box-shadow .28s var(--ease), border-color .25s;
+    }
+    .iter-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(61,92,58,.4);
+      box-shadow: 0 6px 24px rgba(58,74,46,.09);
+    }
+
+    /* outcome-card hover border */
+    .outcome-card {
+      transition: transform .28s var(--ease), box-shadow .28s var(--ease), border-color .25s;
+    }
+    .oc-warm:hover  { transform: translateY(-3px); border-color: rgba(138,61,61,.35); box-shadow: 0 8px 28px rgba(138,61,61,.1); }
+    .oc-green:hover { transform: translateY(-3px); border-color: rgba(61,92,58,.4);   box-shadow: 0 8px 28px rgba(61,92,58,.1); }
+    .oc-blue:hover  { transform: translateY(-3px); border-color: rgba(61,79,92,.4);   box-shadow: 0 8px 28px rgba(61,79,92,.1); }
+
+    /* Solution image zoom */
+    .img-zoom {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      margin-bottom: .6rem;
+      transition: border-color .3s var(--ease);
+    }
+    .img-zoom:hover { border-color: rgba(61,92,58,.35); }
+    .img-zoom img {
+      width: 100%; display: block;
+    }
+
+    /* Module section — h3 accent on hover */
+    .module { transition: none; }
+    .module h3 { transition: color .25s var(--ease); }
+    .module:hover h3 { color: var(--accent); }
+
+    /* Section label line animate */
+    .section-label::before { animation: none; }
+    .section-label.visible::before {
+      animation: lineExpand .6s var(--ease) both;
+    }
+    @keyframes lineExpand {
+      from { width: 0; opacity: 0; }
+      to   { width: 20px; opacity: 1; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .wrap { padding: 0 2rem; }
+      .case-hero { grid-template-columns: 1fr; gap: 2rem; }
+      .hero-info-bar { padding-top: 1rem; flex-direction: row; flex-wrap: wrap; gap: 1.5rem; }
+      .grid-3 { grid-template-columns: 1fr 1fr; }
+      .persona-grid { grid-template-columns: 1fr 1fr; }
+      .outcome-grid { grid-template-columns: 1fr 1fr; }
+      .process-card { grid-template-columns: 80px 1fr; }
+    }
+    @media (max-width: 768px) {
+      html { font-size: 16px; }
+      nav { padding: 1rem 1.5rem; }
+      .wrap { padding: 0 1.5rem; }
+      .meta-bar { grid-template-columns: repeat(2, 1fr); row-gap: 1rem; }
+      .meta-item:nth-child(2), .meta-item:nth-child(4) { border-right: none; margin-right: 0; padding-right: 0; }
+      .grid-2, .grid-3, .ps-grid, .persona-grid, .iter-row { grid-template-columns: 1fr; }
+      .pain-row { grid-template-columns: 1fr; }
+      .pain-row-left { border-right: none; border-bottom: 1px solid var(--line); }
+      .outcome-grid { grid-template-columns: 1fr; }
+      .process-card { grid-template-columns: 70px 1fr; }
+      .case-hero { padding: 7rem 1.5rem 2.5rem; grid-template-columns: 1fr; }
+      .hero-info-bar { padding-top: 1.5rem; flex-direction: row; flex-wrap: wrap; gap: 1.5rem; }
+      .iter-row { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+    @media (max-width: 480px) {
+      html { font-size: 15px; }
+      .meta-bar { grid-template-columns: 1fr 1fr; }
+      .process-card { grid-template-columns: 1fr; }
+      .process-card-left { flex-direction: row; justify-content: flex-start; border-right: none; border-bottom: 1px solid var(--line); align-self: auto; }
+      .section-title { font-size: 1.8rem; }
+      .case-hero h1 { font-size: 3.5rem; }
+    }
+    .scroll-top {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 300;
+      display: flex; align-items: center; gap: .45rem;
+      padding: .52rem 1rem;
+      border-radius: 100px;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 16px rgba(58,74,46,.22);
+      font-family: var(--font-mon); font-size: .62rem;
+      font-weight: 500; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--bg-light); cursor: none;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity .35s var(--ease), transform .35s var(--ease),
+                  background .25s, color .25s, border-color .25s, box-shadow .25s;
+      pointer-events: none;
+    }
+    .scroll-top.visible { opacity: 1; transform: none; pointer-events: all; }
+    .scroll-top:hover {
+      background: rgba(240,238,230,.95); color: var(--accent);
+      border-color: rgba(58,74,46,.2);
+      box-shadow: 0 6px 20px rgba(58,74,46,.12);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+  <button class="scroll-top" id="scrollTopBtn" aria-label="Back to top"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8.5V1.5"/><path d="M2 4.5 5 1.5l3 3"/></svg>Top</button>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="index.html#work" class="nav-back">← Back to Portfolio</a>
+    <div class="nav-logo">Xiangyu Shi</div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="case-hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-tag">Enterprise Product Design</span>
+        <span class="hero-eyebrow-tag">B2B Internal System</span>
+      </div>
+      <h1 class="reveal">GameFlow</h1>
+      <p class="hero-tagline reveal">A Project Management Platform for Game Development</p>
+    </div>
+    <div class="hero-info-bar">
+      <div>
+        <div class="hero-info-label">Role</div>
+        <div class="hero-info-value">Product Design Intern</div>
+      </div>
+      <div>
+        <div class="hero-info-label">Company</div>
+        <div class="hero-info-value">KingSoft Seasun Games</div>
+      </div>
+      <div>
+        <div class="hero-info-label">Timeline</div>
+        <div class="hero-info-value">Jun 2021 — Jun 2022</div>
+      </div>
+      <div>
+        <div class="hero-info-label">Scope</div>
+        <div class="hero-info-value">User Research · Product Design</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 · CONTEXT & BACKGROUND -->
+  <div class="wrap">
+    <section class="sec reveal">
+      <div class="section-label">01 · Context</div>
+      <div class="section-title">Seasun Games &amp; <em>the Challenge of Scale</em></div>
+      <p style="font-size:.95rem;color:var(--ink-muted);line-height:1.85;">
+        Seasun Games runs 10+ live game titles with a team of over 1,000 people. Game development isn't like building a SaaS product — requirements shift constantly, production cycles run months long, and a single title involves artists, engineers, QA, and operations all working in parallel.
+      </p>
+      <p style="font-size:.95rem;color:var(--ink-muted);line-height:1.85;margin-top:1rem;">
+        But the tools hadn't kept up with that complexity:
+      </p>
+
+      <div class="grid-3" style="margin-top:1.8rem;">
+        <div class="card ctx-warm" style="padding:1rem 1.2rem;">
+          <div class="ctx-num">01</div>
+          <h4 style="color:var(--red);">Producers</h4>
+          <p>Tracked sprints in Excel</p>
+        </div>
+        <div class="card ctx-green" style="padding:1rem 1.2rem;">
+          <div class="ctx-num">02</div>
+          <h4 style="color:var(--accent);">Requirements</h4>
+          <p>Requirement changes traveled through group chats</p>
+        </div>
+        <div class="card ctx-blue" style="padding:1rem 1.2rem;">
+          <div class="ctx-num">03</div>
+          <h4 style="color:var(--blue);">QA</h4>
+          <p>Had no view into what was coming until it landed in their queue</p>
+        </div>
+      </div>
+
+      <p style="font-size:.95rem;color:var(--ink-muted);line-height:1.85;margin-top:1.8rem;font-style:italic;">
+        GameFlow was built to replace that patchwork with one production platform every role could actually&nbsp;use.
+      </p>
+    </section>
+  </div>
+
+  <!-- 02 · PROBLEM STATEMENT -->
+  <div class="wrap">
+    <section class="sec reveal">
+      <div class="section-label">02 · Research: 3 Weeks Before Any Screen</div>
+      <div class="section-title">Three Pain Points That <em>Kept Showing Up</em></div>
+      <p style="font-size:.95rem;color:var(--ink-muted);line-height:1.85;">
+        Before designing anything, I spent three weeks embedded across five departments, sitting in on daily stand-ups, and interviewing 15 stakeholders — producers, artists, QA leads, planners, devops. The goal wasn't to collect feature requests. It was to understand how a 1,000-person studio actually coordinated work day to day, and where that coordination broke down.
+      </p>
+
+      <div class="pain-rows">
+        <div class="pain-row pr-red">
+          <div class="pain-row-left">
+            <div class="pain-badge pb-red">Pain Point 01</div>
+            <h4 style="color:var(--red);">Nobody knows what changed,&nbsp;or who changed&nbsp;it</h4>
+          </div>
+          <div class="pain-row-right">
+            <p>A planner updates a character skill during a balance pass. The artist is still working from the old spec. QA writes a bug report for something that's actually working as intended, just under a different requirement now. The problem wasn't that changes happened — that's normal in game dev. The problem was that changes were invisible: tracked in personal spreadsheets, communicated through group chats, easy to miss.</p>
+          </div>
+        </div>
+        <div class="pain-row pr-green">
+          <div class="pain-row-left">
+            <div class="pain-badge pb-green">Pain Point 02</div>
+            <h4 style="color:var(--accent);">Five teams, five tracking systems, zero shared view</h4>
+          </div>
+          <div class="pain-row-right">
+            <p>The art team tracked work in their own sheet. Engineering had a different one. QA had another. When the art team pushed a deadline, engineering found out late, or not at all. A producer who wanted a cross-team status update had to message five group leads individually and piece together the picture themselves.</p>
+          </div>
+        </div>
+        <div class="pain-row pr-blue">
+          <div class="pain-row-left">
+            <div class="pain-badge pb-blue">Pain Point 03</div>
+            <h4 style="color:var(--blue);">Delays were discovered, not anticipated</h4>
+          </div>
+          <div class="pain-row-right">
+            <p>With production cycles running 3 to 12 months, there was no reliable way to see whether a release was on track until it was already behind. By the time someone noticed a bottleneck, it had already cascaded.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Solution 1 -->
+  <div class="wrap">
+    <section class="module reveal">
+      <div class="mod-num">Solution 01 / 03</div>
+      <h3>Requirement Tracking</h3>
+      <div class="mod-tagline">Make every change visible</div>
+
+      <div class="ps-grid">
+        <div class="ps-block prob-block">
+          <div class="ps-label prob"><span class="dot prob"></span>The scenario</div>
+          <p>A requirement comes in from player feedback, gets prioritized by the producer, assigned to a planner, handed off to engineering, then to QA. At any point, it might change. The old process had no way to track what changed, when, or by whom.</p>
+        </div>
+        <div class="ps-block sol-block">
+          <div class="ps-label sol"><span class="dot sol"></span>Design Solution</div>
+          <p>I designed a unified Requirement Pool where all incoming requests are collected and tagged by source and category. Each requirement has customizable workflow states, and when it moves to a new stage, the responsible person updates automatically and gets notified. A full change log records every modification, so when something changes midstream, anyone can trace back to what happened.</p>
+        </div>
+      </div>
+
+      <div class="detail-box">
+        <h5>Why This Approach</h5>
+        <p style="font-size:.82rem;color:var(--ink-muted);line-height:1.8;">We considered a simpler linear tracker, but game production requirements don't follow a straight line — they branch, get deprioritized, and resurface. The tagging and filtering system was designed so that different roles could look at the same pool but see what mattered to them.</p>
+      </div>
+
+      <div class="img-zoom reveal-img">
+        <img src="seasun/1.jpg" alt="Requirement Tracking Design" />
+      </div>
+      <div class="img-caption">Requirement Pool list view &amp; workflow editor</div>
+    </section>
+  </div>
+
+  <!-- Solution 2 -->
+  <div class="wrap">
+    <section class="module reveal">
+      <div class="mod-num">Solution 02 / 03</div>
+      <h3>Cross-Team Collaboration</h3>
+      <div class="mod-tagline">One view of the work, shared across every team</div>
+
+      <div class="ps-grid">
+        <div class="ps-block prob-block">
+          <div class="ps-label prob"><span class="dot prob"></span>The scenario</div>
+          <p>The Art Center serves multiple game titles simultaneously. A lead artist needs to know what's on their team's plate across all projects. A producer needs to see how engineering, art, and QA are tracking against the same milestone, without messaging five people.</p>
+        </div>
+        <div class="ps-block sol-block">
+          <div class="ps-label sol"><span class="dot sol"></span>Design Solution</div>
+          <p>I designed a unified production pipeline view that connects all roles into one workflow: requirement → development → testing → release. The project structure uses custom attribute fields (e.g., "Game Title," "Platform") so managers can filter by department, game, or resource allocation. Power users can save preset filter views and toggle between them with one click, instead of reconfiguring every time.</p>
+        </div>
+      </div>
+
+      <div class="detail-box">
+        <h5>Why This Approach</h5>
+        <p style="font-size:.82rem;color:var(--ink-muted);line-height:1.8;">The temptation was to build separate dashboards for each department. But the core problem was fragmentation — adding more views would have made it worse. The design bet was: one shared pipeline, with flexible filtering, so everyone sees the same source of truth through their own lens.</p>
+      </div>
+
+      <div class="img-zoom reveal-img">
+        <img src="seasun/2.jpg" alt="Cross-Team Collaboration Design" />
+      </div>
+      <div class="img-caption">Unified pipeline view &amp; multi-dimensional filter panel</div>
+    </section>
+  </div>
+
+  <!-- Solution 3 -->
+  <div class="wrap">
+    <section class="module reveal">
+      <div class="mod-num">Solution 03 / 03</div>
+      <h3>Progress Tracking</h3>
+      <div class="mod-tagline">Spot delays before they cascade</div>
+
+      <div class="ps-grid">
+        <div class="ps-block prob-block">
+          <div class="ps-label prob"><span class="dot prob"></span>The scenario</div>
+          <p>A version is due in six weeks. The producer sees tasks are being completed, but can't tell if the remaining work is on pace. Two weeks before release, three critical tasks surface as blocked, and it's too late to adjust scope.</p>
+        </div>
+        <div class="ps-block sol-block">
+          <div class="ps-label sol"><span class="dot sol"></span>Design Solution</div>
+          <p>I designed an iteration planning framework aligned with game production phases: Prototype → Alpha → Beta → Live Ops. Each phase has defined milestones and estimated effort. Interactive Gantt charts show cross-team timelines, and burndown charts give real-time progress visibility. Early warning indicators flag deadline risks before they cascade.</p>
+        </div>
+      </div>
+
+      <div class="detail-box">
+        <h5>A Key Design Trade-off</h5>
+        <p style="font-size:.82rem;color:var(--ink-muted);line-height:1.8;">The burndown chart y-axis can toggle between task count and effort hours. This sounds small, but it mattered: a PM looks at task count to gauge "how many things are left." A tech lead looks at effort hours to gauge "how many person-days we still need." A 2-week task and a 2-hour task shouldn't carry equal visual weight. Supporting both views in one chart meant both roles could use the same tool without talking past each other.</p>
+      </div>
+
+      <div class="img-zoom reveal-img">
+        <img src="seasun/3.jpg" alt="Progress Tracking Design" />
+      </div>
+      <div class="img-caption">Gantt chart, burndown chart &amp; sprint Kanban</div>
+    </section>
+  </div>
+
+  <!-- REFLECTION -->
+  <div class="wrap">
+    <section class="sec reflection reveal" style="padding-bottom:5rem;">
+      <div class="section-label">Reflection &amp; Takeaways</div>
+      <div class="section-title">What This Project <em>Taught Me</em></div>
+
+      <div class="grid-3" style="margin-top:1.5rem;margin-bottom:2rem;">
+        <div class="card rc-stripe">
+          <h4 style="color:var(--accent);">Design for flexibility, not templates</h4>
+          <p style="font-size:.78rem;">Game teams have diverse workflows. Building customizable components (states, fields, views) rather than rigid templates was key to adoption across different project types and team sizes. The moment we hard-coded a workflow, someone needed it to work differently.</p>
+        </div>
+        <div class="card rc-ghost">
+          <h4 style="color:var(--blue) !important;">Earn credibility through evidence</h4>
+          <p style="font-size:.78rem;">As an intern on the team, I couldn't rely on authority. Every design decision had to be grounded in research — a quote from an interview, a pattern from observation, a data point from testing. That discipline shaped how I present work to this day.</p>
+        </div>
+        <div class="card rc-dark">
+          <h4>The real challenge was organizational, not visual</h4>
+          <p style="font-size:.78rem;">Three weeks of groundwork changed how I approach every project since. Before GameFlow, I would have started wireframes in week one. Now, my first move on any project is mapping the existing workflow end to end before touching any screen. That habit saves me the most rework.</p>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span>© 2026 Xiangyu Shi</span>
+  </footer>
+
+  <script>
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove', e => {
+      mx=e.clientX; my=e.clientY;
+      cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+    });
+    (function loop() {
+      rx+=(mx-rx)*.28; ry+=(my-ry)*.28;
+      ring.style.left=rx+'px'; ring.style.top=ry+'px';
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a,button').forEach(el=>{
+      el.addEventListener('mouseenter',()=>{
+        cursor.style.transform='translate(-50%,-50%) scale(2.5)';
+        cursor.style.background='var(--accent)';
+      });
+      el.addEventListener('mouseleave',()=>{
+        cursor.style.transform='translate(-50%,-50%) scale(1)';
+        cursor.style.background='var(--ink)';
+      });
+    });
+
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 60));
+
+    /* ── Stagger process cards ── */
+    document.querySelectorAll('.process-card').forEach((card, i) => {
+      if (!card.classList.contains('reveal')) card.classList.add('reveal');
+      card.classList.add('stagger-delay-' + Math.min(i + 1, 6));
+    });
+
+    /* ── Stagger grid children ── */
+    document.querySelectorAll('.grid-2,.grid-3,.outcome-grid,.persona-grid').forEach(grid => {
+      [...grid.children].forEach((child, i) => {
+        if (!child.classList.contains('reveal')) child.classList.add('reveal');
+        child.classList.add('stagger-delay-' + Math.min(i + 1, 6));
+      });
+    });
+
+    /* ── Scroll reveal observer ── */
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          revealObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal, .reveal-img, .reveal-left, .section-label').forEach(el => {
+      revealObserver.observe(el);
+    });
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    window.addEventListener('scroll', () => {
+      scrollTopBtn.classList.toggle('visible', window.scrollY > 500);
+    }, { passive: true });
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
