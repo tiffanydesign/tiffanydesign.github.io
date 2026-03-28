@@ -617,6 +617,7 @@
     @media (max-width: 768px) {
       html { font-size: 16px; }
       nav { padding: 1.2rem 1.5rem; }
+      .contact-info-row { font-size: .72rem; letter-spacing: .04em; gap: .7rem; }
       nav.scrolled { padding: .9rem 1.5rem; }
       .nav-pill { display: none; }
       .nav-cta { margin-left: 0; }
@@ -1452,6 +1453,15 @@
   <script>
 const cursor = document.getElementById('cursor');
     const ring   = document.getElementById('cursorRing');
+
+    // Hide custom cursor on touch / non-mouse devices
+    const isMouseDevice = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!isMouseDevice) {
+      cursor.style.display = 'none';
+      ring.style.display   = 'none';
+      document.body.style.cursor = 'auto';
+    }
+
     let mx=0,my=0,rx=0,ry=0;
 
     document.addEventListener('mousemove', e => {
