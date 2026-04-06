@@ -326,6 +326,8 @@
     .project-card:nth-child(4) .project-thumb-bg { background: #1e2f1c; }
     .project-card:nth-child(5) .project-thumb-bg { background: #1a2e28; }
     .project-card:nth-child(6) .project-thumb-bg { background: #2a3520; }
+    .project-card:nth-child(7) .project-thumb-bg { background: #1b2e20; padding: 0 2.5rem; text-align: center; }
+    .project-card:nth-child(8) .project-thumb-bg { background: #1e3328; padding: 0 2.5rem; text-align: center; }
 
     /* ─── HOVER-REVEAL PHOTO ──────────────────────────── */
     .project-thumb-photo {
@@ -1294,6 +1296,52 @@
         </a>
       </article>
 
+
+      <!-- 7th card: Sound-Assisted Climbing -->
+      <article class="project-card">
+        <a href="sound-climbing.html" style="display:block;cursor:none;">
+        <div class="project-card-inner">
+          <div class="project-thumb">
+            <div class="project-thumb-bg">
+              Sound Climbing
+              <span class="project-num">07</span>
+              <img src="kth1.jpg" alt="Sound-Assisted Climbing" class="project-thumb-photo" />
+            </div>
+            <div class="project-overlay"></div>
+            <div class="project-view dark-view"><span>View Project</span></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tags"><span class="project-meta">Multimodal Interaction</span><span class="project-meta">@KTH</span></div>
+            <div class="project-title">Sound-Assisted Climbing</div>
+            <div class="project-desc">Sonified real-time guidance for bouldering.</div>
+          </div>
+        </div>
+        </a>
+      </article>
+
+
+      <!-- 8th card: Social Space VR -->
+      <article class="project-card">
+        <a href="social-space-vr.html" style="display:block;cursor:none;">
+        <div class="project-card-inner">
+          <div class="project-thumb">
+            <div class="project-thumb-bg">
+              Social Space VR
+              <span class="project-num">08</span>
+              <img src="kth3.jpg" alt="Social Space VR" class="project-thumb-photo" />
+            </div>
+            <div class="project-overlay"></div>
+            <div class="project-view dark-view"><span>View Project</span></div>
+          </div>
+          <div class="project-info">
+            <div class="project-tags"><span class="project-meta">VR Project</span><span class="project-meta">@KTH</span></div>
+            <div class="project-title">Social Space VR</div>
+            <div class="project-desc">Can a virtual character's attitude change how real people behave?</div>
+          </div>
+        </div>
+        </a>
+      </article>
+
     </div>
 
 
@@ -1482,11 +1530,13 @@ const cursor = document.getElementById('cursor');
       document.body.style.cursor = 'auto';
     }
 
-    let mx=0,my=0,rx=0,ry=0;
+    cursor.style.opacity='0'; ring.style.opacity='0';
+    let mx=0,my=0,rx=0,ry=0,shown=false;
 
     document.addEventListener('mousemove', e => {
       mx=e.clientX; my=e.clientY;
       cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+      if(!shown){shown=true;rx=mx;ry=my;cursor.style.opacity='1';ring.style.opacity='1';}
     });
     (function loop() {
       rx+=(mx-rx)*.34; ry+=(my-ry)*.34;

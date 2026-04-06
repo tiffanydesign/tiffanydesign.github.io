@@ -468,11 +468,13 @@
   <script>
     const cursor = document.getElementById('cursor');
     const ring   = document.getElementById('cursorRing');
-    let mx=0,my=0,rx=0,ry=0;
+    cursor.style.opacity='0'; ring.style.opacity='0';
+    let mx=0,my=0,rx=0,ry=0,shown=false;
 
     document.addEventListener('mousemove', e => {
       mx=e.clientX; my=e.clientY;
       cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+      if(!shown){shown=true;rx=mx;ry=my;cursor.style.opacity='1';ring.style.opacity='1';}
     });
     (function loop() {
       rx+=(mx-rx)*.18; ry+=(my-ry)*.18;
