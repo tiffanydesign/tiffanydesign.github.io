@@ -650,6 +650,33 @@
       .contact-email-link { font-size: 1.4rem; }
       .about-tags { gap: .4rem; }
     }
+    /* ─── WORK TABS ──────────────────────────────────── */
+    .work-tabs {
+      display: flex; align-items: center;
+      margin-bottom: 2.5rem;
+      background: rgba(240,238,230,.55);
+      border: 1px solid rgba(58,74,46,.15);
+      border-radius: 100px;
+      padding: .32rem .38rem;
+      width: fit-content; gap: .15rem;
+    }
+    .work-tab {
+      font-family: var(--font-mon); font-size: .82rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--ink-muted);
+      padding: .52rem 1.3rem; border-radius: 100px;
+      background: transparent; border: none;
+      cursor: none; transition: color .2s, background .2s;
+      line-height: 1;
+    }
+    .work-tab:hover { color: var(--ink); background: rgba(255,255,255,.55); }
+    .work-tab.active { background: var(--accent); color: var(--white); }
+    .work-tab-sep {
+      font-size: .55rem; color: rgba(58,74,46,.3);
+      pointer-events: none; user-select: none;
+      padding: 0 .05rem; line-height: 1;
+    }
+
     /* ─── TOUCH / MOBILE: hide desktop cursor ─────────── */
     @media (hover: none), (pointer: coarse) {
       .cursor, .cursor-ring { display: none !important; }
@@ -885,9 +912,19 @@
       </div>
       <div class="work-header-right" style="font-size:1.1rem;font-weight:700;color:var(--accent);">2021 — 2026</div>
     </div>
+    <div class="work-tabs" role="tablist" aria-label="Project categories">
+      <button class="work-tab active" data-tab="design" role="tab" aria-selected="true">Design</button>
+      <span class="work-tab-sep" aria-hidden="true">·</span>
+      <button class="work-tab" data-tab="build" role="tab" aria-selected="false">Build</button>
+      <span class="work-tab-sep" aria-hidden="true">·</span>
+      <button class="work-tab" data-tab="research" role="tab" aria-selected="false">Research</button>
+      <span class="work-tab-sep" aria-hidden="true">·</span>
+      <button class="work-tab" data-tab="all" role="tab" aria-selected="false">All</button>
+    </div>
+
     <div class="work-grid">
 
-      <article class="project-card">
+      <article class="project-card" data-category="design">
         <a href="recruitment-system.html" style="display:block;text-decoration:none;color:inherit;">
         <div class="project-card-inner">
           <div class="project-thumb">
@@ -1044,7 +1081,7 @@
         </a>
       </article>
 
-      <article class="project-card">
+      <article class="project-card" data-category="design">
         <a href="gameflow.html" style="display:block;text-decoration:none;color:inherit;">
         <div class="project-card-inner">
           <div class="project-thumb">
@@ -1209,7 +1246,7 @@
       </article>
 
       <!-- 3rd card: Kaleido -->
-      <article class="project-card">
+      <article class="project-card" data-category="design">
         <a href="kaleido.html" style="display:block;cursor:none;">
         <div class="project-card-inner">
           <div class="project-thumb">
@@ -1231,7 +1268,7 @@
       </article>
 
       <!-- 4th card: KANKAN -->
-      <article class="project-card">
+      <article class="project-card" data-category="design">
         <a href="kankan.html" style="display:block;cursor:none;">
         <div class="project-card-inner">
           <div class="project-thumb">
@@ -1253,7 +1290,7 @@
       </article>
 
       <!-- 5th card: AI Learning Hub -->
-      <article class="project-card">
+      <article class="project-card" data-category="build">
         <a href="https://tiffanyaihub.lovable.app" target="_blank" style="display:block;cursor:none;">
         <div class="project-card-inner">
           <div class="project-thumb">
@@ -1275,7 +1312,7 @@
       </article>
 
       <!-- 6th card: KörkortHub -->
-      <article class="project-card">
+      <article class="project-card" data-category="build">
         <a href="https://korkorthub.lovable.app" target="_blank" style="display:block;cursor:none;">
         <div class="project-card-inner">
           <div class="project-thumb">
@@ -1298,7 +1335,7 @@
 
 
       <!-- 7th card: Sound-Assisted Climbing -->
-      <article class="project-card">
+      <article class="project-card" data-category="research">
         <a href="sound-climbing.html" style="display:block;cursor:none;">
         <div class="project-card-inner">
           <div class="project-thumb">
@@ -1321,7 +1358,7 @@
 
 
       <!-- 8th card: Social Space VR -->
-      <article class="project-card">
+      <article class="project-card" data-category="research">
         <a href="social-space-vr.html" style="display:block;cursor:none;">
         <div class="project-card-inner">
           <div class="project-thumb">
@@ -1609,6 +1646,31 @@ const cursor = document.getElementById('cursor');
     scrollTopBtn.addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    // ── Work tabs ──
+    (function() {
+      const tabs  = document.querySelectorAll('.work-tab');
+      const cards = document.querySelectorAll('.project-card');
+
+      function filterCards(cat) {
+        cards.forEach(card => {
+          const match = cat === 'all' || card.dataset.category === cat;
+          card.style.display = match ? '' : 'none';
+        });
+      }
+
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+          tab.classList.add('active');
+          tab.setAttribute('aria-selected', 'true');
+          filterCards(tab.dataset.tab);
+        });
+      });
+
+      // Init: show Design tab by default
+      filterCards('design');
+    })();
   </script>
 </body>
 </html>
